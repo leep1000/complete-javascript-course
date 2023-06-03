@@ -5,7 +5,7 @@
 
 // PROBLEM 1:
 // We work for a company building a smart home thermometer. Our most recent task is this: "Given an array of temperatures of one day, calculate the temperature amplitude. Keep in mind that sometimes there might be a sensor error."
-
+/*
 const temperatures = [3, -2, -6, -1, 'error', 9, 13, 17, 15, 14, 9, 5];
 
 // 1) Understanding the problem
@@ -72,3 +72,32 @@ function newCalcAmplitude(temp1, temp2) {
 
 const mergeAmplitude = newCalcAmplitude([1, 5, 9], [21, 4, 8]);
 console.log(`Merged amplitude is ${mergeAmplitude}`);
+
+*/
+
+// 1) Understanding the problem
+// - Need to return a string
+// - What the string will contain depends on the arr argument
+
+// 2) Breaking up into sub-problems
+// - Need to use template literals
+// - The days will depend on the index and length of the arr
+// - maybe index of item +1?
+// actually no, can just use the loop
+
+function printForecast(arr) {
+  let returnedString = `...`;
+  // let dayNumber = 0;
+  for (let index = 0; index < arr.length; index++) {
+    let currentTemp = arr[index];
+    // this was unnecessary due to already having index which does the exact same thing
+    // dayNumber++ ;
+    returnedString += ` ${currentTemp}ºC in ${index + 1} days ...`;
+    console.log(returnedString);
+  }
+  console.log(returnedString);
+  return returnedString;
+}
+
+const arr = [12, 5, -5, 0, 4];
+printForecast(arr);
