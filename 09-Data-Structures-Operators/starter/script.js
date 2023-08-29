@@ -1,8 +1,75 @@
 'use strict';
 
-// Data needed for a later exercise
+// Data
 const flights =
   '_Delayed_Departure;fao93766109;txl2133758440;11:25+_Arrival;bru0943384722;fao93766109;11:45+_Delayed_Arrival;hel7439299980;fao93766109;12:05+_Departure;fao93766109;lis2323639855;12:30';
+
+const flightsConverter = function (data) {
+  const separateFlights = data.toLowerCase().split('+');
+  for (let i = 0; i < separateFlights.length; i++) {
+    let [status, fromLocation, toLocation, time] =
+      separateFlights[i].split(';');
+    if (status.includes('delayed') && status.includes('departure')) {
+      console.log(
+        `🔴 Delayed Departure from ${fromLocation
+          .slice(0, 3)
+          .toUpperCase()} to ${toLocation.slice(0, 3).toUpperCase()} (${time
+          .slice(0, 5)
+          .replace(':', 'h')})`
+      );
+    } else if (status.includes('delayed') && status.includes('arrival')) {
+      console.log(
+        `🔴 Delayed arrival from ${fromLocation
+          .slice(0, 3)
+          .toUpperCase()} to ${toLocation.slice(0, 3).toUpperCase()} (${time
+          .slice(0, 5)
+          .replace(':', 'h')})`
+      );
+    } else if (status.includes('arrival')) {
+      console.log(
+        `Arrival from ${fromLocation.slice(0, 3).toUpperCase()} to ${toLocation
+          .slice(0, 3)
+          .toUpperCase()} (${time.slice(0, 5).replace(':', 'h')})`
+      );
+    } else if (status.includes('departure')) {
+      console.log(
+        `Departure from ${fromLocation
+          .slice(0, 3)
+          .toUpperCase()} to ${toLocation.slice(0, 3).toUpperCase()} (${time
+          .slice(0, 5)
+          .replace(':', 'h')})`
+      );
+    }
+  }
+};
+// flightsConverter(flights);
+
+function location3Letters(flightLocation) {
+  return flightLocation.slice(0, 3).toUpperCase();
+}
+
+function timeConverter(flightTime) {
+  return flightTime.slice(0, 5).replace(':', 'h');
+}
+
+const flightsConverter2 = function (data) {
+  const separateFlights = data.toLowerCase().split('+');
+  for (const flight of separateFlights) {
+    const [status, fromLocation, toLocation, time] = flight.split(';');
+    const output = `${status.includes('delayed') ? `🔴 Delayed ` : ``}${
+      status.includes('arrival') ? `Arrival` : `Departure`
+    } from ${location3Letters(fromLocation)} to ${location3Letters(
+      toLocation
+    )} (${timeConverter(time)})`;
+    console.log(output);
+  }
+};
+flightsConverter2(flights);
+
+// 🔴 Delayed Departure from FAO to TXL (11h25)
+//              Arrival from BRU to FAO (11h45)
+//   🔴 Delayed Arrival from HEL to FAO (12h05)
+//            Departure from FAO to LIS (12h30)
 
 // Data needed for first part of the section
 
@@ -76,6 +143,160 @@ const restaurant = {
   },
 };
 
+document.body.append(document.createElement('textarea'));
+document.body.append(document.createElement('button'));
+const button = document.querySelector('button');
+
+button.addEventListener('click', converter);
+
+function converter() {
+  const textArea = document.querySelector('textarea').value;
+  const rows = textArea.split('\n');
+  console.log(rows);
+
+  for (const [i, row] of rows.entries()) {
+    let newText = row.trim().toLowerCase().split('_');
+    const [first, second] = newText;
+    const joinedText = `${first}${second.replace(
+      second[0],
+      second[0].toUpperCase()
+    )}`;
+    // const secondStr = newText[1];
+    // newText[1] = secondStr[0].toUpperCase() + secondStr.slice(1);
+    // const joinedText = newText.join('');
+
+    // now for the ticks
+    const paddedText = joinedText.padEnd(20, ' ');
+    const textWithTicks = paddedText + `${'✅'.repeat(i + 1)}`;
+    console.log(textWithTicks);
+  }
+}
+
+/*
+
+// Working With Strings - Part 3
+// Split and Join
+console.log('a+very+nice+string'.split('+')); // ["a","very","nice","string"]
+console.log('Jonas Schmedtmann'.split(' ')); // ['Jonas', 'Schmedtmann']
+
+const [firstName, lastName] = 'Jonas Schmedtmann'.split(' ');
+console.log(firstName); // Jonas
+console.log(lastName); // Schmedtmann
+
+console.log(['Mr.', firstName, lastName.toUpperCase()].join(' ')); // Mr. Jonas SCHMEDTMANN
+
+const passenger = 'jessica ann smith davis';
+const passengerSplit = passenger.split(' ');
+const passengerCapitalised = [];
+for (const name of passengerSplit) {
+  passengerCapitalised.push(name[0].toUpperCase() + name.slice(1));
+}
+const passengerComplete = passengerCapitalised.join(' ');
+console.log(passengerComplete); // Jessica Ann Smith Davis
+
+// Alternative way
+const capitaliseNames = function (name) {
+  const splitNames = name.split(' ');
+  const newPassengerArr = [];
+
+  for (const name of splitNames) {
+    newPassengerArr.push(name.replace(name[0], name[0].toUpperCase()));
+  }
+  console.log(newPassengerArr.join(' '));
+};
+
+capitaliseNames('lee palmer'); // Lee Palmer
+
+// Padding a string
+const message = 'Go to gate 23!';
+console.log(message.padStart(25, '+')); // +++++++++++Go to gate 23!
+console.log('Lee'.padStart(25, '+')); // ++++++++++++++++++++++Lee
+
+console.log(message.padStart(25, '+').padEnd(35, '+')); // +++++++++++Go to gate 23!++++++++++ // Added ten more +
+
+const maskCreditCard = function (number) {
+  const numberStr = number + '';
+  const lastFourDigits = numberStr.slice(-4);
+  const hiddenCard = lastFourDigits.padStart(numberStr.length, '*');
+  console.log(hiddenCard);
+};
+
+maskCreditCard(4369741); // ***9741
+maskCreditCard(7532147852369741); // ************9741
+maskCreditCard('75321478523697417856'); // ****************7856
+
+// Repeat
+const weatherMessage = 'Bad weather... All Departures Delayed... ';
+console.log(weatherMessage.repeat(5)); // Bad weather... All Departures Delayed... (x5)
+
+const planesInLine = function (n) {
+  console.log(`There are ${n} planes in line ${'✈'.repeat(n)}`);
+};
+planesInLine(5); // There are 5 planes in line ✈✈✈✈✈
+planesInLine(12); // There are 12 planes in line ✈✈✈✈✈✈✈✈✈✈✈✈
+
+// Working With Strings - Part 2
+const airline = 'TAP Air Portugal';
+
+console.log(airline.toLowerCase()); // tap air portugal
+console.log(airline.toUpperCase()); // TAP AIR PORTUGAL
+
+// Fix capitalisation in name
+const passenger = 'jOnAS';
+
+const fixNames = function (name) {
+  const nameLower = name.toLowerCase();
+  const nameFixed = nameLower[0].toUpperCase() + nameLower.slice(1);
+  console.log(nameFixed);
+};
+fixNames(passenger);
+
+// Comparing emails
+const email = 'hello@jonas.io';
+const loginEmail = '  Hello@Jonas.Io \n';
+
+const lowerEmail = loginEmail.toLowerCase();
+const trimmedEmail = lowerEmail.trim();
+console.log(trimmedEmail); // hello@jonas.io
+
+const normalisedEmaiL = loginEmail.toLowerCase().trim();
+console.log(normalisedEmaiL); // hello@jonas.io
+console.log(email === normalisedEmaiL); // true
+
+// replacing
+const priceGB = '288,97£';
+const priceUS = priceGB.replace(',', '.').replace('£', '$');
+console.log(priceUS);
+
+const announcement = `All passengers come to boarding door 23. Boarding door 23!`;
+console.log(announcement.replace('door', 'gate')); // All passengers come to boarding gate 23. Boarding door 23!
+console.log(announcement.replaceAll('door', 'gate')); // All passengers come to boarding gate 23. Boarding gate 23!
+console.log(announcement.replace(/door/g, 'gate')); // All passengers come to boarding gate 23. Boarding gate 23!
+
+// Booleans
+const plane = 'Airbus A320neo';
+console.log(plane.includes('neo')); // true
+console.log(plane.includes('Boeing')); // false
+console.log(plane.startsWith('Air')); // true
+console.log(plane.startsWith('Aib')); // false
+
+if (plane.startsWith('Airbus') && plane.endsWith('neo')) {
+  console.log('Part of the NEW Airbus family!'); // Part of the NEW Airbus family!
+}
+
+// Practice exercise
+const checkBaggage = function (items) {
+  const baggage = items.toLowerCase();
+  if (baggage.includes('gun') || baggage.includes('knife')) {
+    console.log(`You are not allowed on board!`);
+  } else {
+    console.log(`Welcome on board!`);
+  }
+};
+checkBaggage('I have a laptop, some Food and a pocket Knife'); // You are not allowed on board!
+checkBaggage('I have socks and a camera'); // Welcome on board!
+checkBaggage('Got some snacks and a gun for protection'); // You are not allowed on board!
+
 // Working with Strings - Part 1
 const airline = 'TAP Air England';
 const plane = 'A320';
@@ -109,7 +330,10 @@ const checkMiddleSeat = function (seat) {
 checkMiddleSeat('11B');
 checkMiddleSeat('23C');
 checkMiddleSeat('3E');
-/*
+
+console.log(new String('Jonas')); // "Jonas"
+console.log(typeof new String('Jonas')); // object
+console.log(typeof new String('Jonas').slice(1)); // string
 
 // Maps
 const rest = new Map();
